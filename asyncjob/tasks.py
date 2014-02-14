@@ -1,3 +1,4 @@
+from abc import abstractmethod
 from boto.exception import S3ResponseError
 from boto.s3.key import Key
 from celery.registry import tasks
@@ -27,7 +28,8 @@ class AsyncTask(celery.Task):
     filename = None
     user_id = None
 
-    def AsyncTask(self):
+    @abstractmethod
+    def asynctask(self):
         return 'Override the SyncJob() method to return a string or file object.'
         
     def get_unique_s3_key(self, filename):
