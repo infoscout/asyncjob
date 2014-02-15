@@ -1,7 +1,6 @@
 from abc import abstractmethod
 from boto.exception import S3ResponseError
 from boto.s3.key import Key
-from celery.registry import tasks
 from django.conf import settings
 import boto
 import celery
@@ -10,7 +9,7 @@ import logging
 import os
 
 from asyncjob.consts import ASYNCJOB_PROCESSING, ASYNCJOB_UPLOADING, \
-    ASYNCJOB_COMPLETE, ASYNCJOB_ERROR, s3_bucket_name, s3_bucket_folder
+    ASYNCJOB_COMPLETE, ASYNCJOB_ERROR, s3_bucket_name, s3_bucket_folder, s3_url_expiration
 from asyncjob.models import AsyncJob
 
 logger = logging.getLogger('asyncjob')
@@ -21,12 +20,13 @@ class AsyncTask(celery.Task):
 
     @param filename: name used to put to S3. Timestamp appended on collision
     @param user_id: django user (optional)
-    
+
     @method AsyncTask: override to return a string or file object that will be written to S3. 
     """
 
     filename = None
-    user_id = None
+    user = None
+    rm_file_after_upload = False
 
     @abstractmethod
     def asynctask(self):
@@ -54,7 +54,7 @@ class AsyncTask(celery.Task):
                     raise
             hash = str(datetime.datetime.now())[:-1]
             prefix, file_extension = os.path.splitext(filename)
-            filename = prefix + hash + file_extension
+            filename = prefix +'_'+ hash + file_extension
         s3_key.key = filename
         return s3_key
 
@@ -64,7 +64,7 @@ class AsyncTask(celery.Task):
             return
 
         job = AsyncJob()
-        job.user_id    = self.user_id
+        job.user       = self.user
         job.status     = ASYNCJOB_PROCESSING
         job.start_date = datetime.datetime.now()
         job.save()
@@ -72,25 +72,30 @@ class AsyncTask(celery.Task):
 
         try:
             # Process data stream
-            stream_resource = self.AsyncTask()    
+            stream_resource = self.asynctask()
 
             # Boto upload
             job = AsyncJob.objects.get(id=job_id)
             job.status = ASYNCJOB_UPLOADING
             job.save()            
-    
+
             filename = self.filename if self.filename else job_id
             s3_key = self.get_unique_s3_key(filename)
 
             if isinstance(stream_resource, basestring):
                 s3_key.set_contents_from_string(stream_resource)
             elif isinstance(stream_resource, file):
-                s3_key.set_contents_from_stream(stream_resource)
+                stream_resource.seek(0)
+                s3_key.set_contents_from_file(stream_resource)
+                if self.rm_file_after_upload:
+                    os.remove(stream_resource.name)
             else:
-                raise
+                logger.error('AsyncJob #%s unknown type:%s' % (job_id, type(stream_resource)), exc_info=True)
+                raise Exception
 
             # Mark complete
-            job.filesize = s3_key.size 
+            job.filesize = s3_key.size
+            job.url = s3_key.generate_url(expires_in=s3_url_expiration)
             job.status = ASYNCJOB_COMPLETE
             job.filename = s3_key.key
             job.end_date = datetime.datetime.now()
@@ -103,4 +108,4 @@ class AsyncTask(celery.Task):
             job.status = ASYNCJOB_ERROR
             job.save()
 
-tasks.register(AsyncTask)
+

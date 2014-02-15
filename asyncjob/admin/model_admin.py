@@ -1,6 +1,6 @@
 from isc_admin import ModelAdmin
 from asyncjob.admin.forms import AsyncJobListForm
-from asyncjob.consts import s3_http_base, s3_bucket_name, s3_bucket_folder, \
+from asyncjob.consts import s3_bucket_name, s3_bucket_folder, \
     ASYNCJOB_COMPLETE
 from asyncjob.models import AsyncJob
 
@@ -24,7 +24,7 @@ class AsyncJobAdmin(ModelAdmin):
 
     def _link(self, obj):
         if obj.status == ASYNCJOB_COMPLETE:
-            link = s3_http_base + s3_bucket_name + s3_bucket_folder + obj.filename
+            link = obj.url
             name = obj.filename
             output = '<a href="%s">Link: %s</a>' % (link, name)
         else:

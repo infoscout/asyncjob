@@ -1,3 +1,4 @@
+import os
 from django.conf import settings
 from django.db import models
 from django.contrib.auth.models import User
@@ -9,6 +10,7 @@ class AsyncJob(models.Model):
     end_date    = models.DateTimeField(null=True, blank=True)
     filesize    = models.CharField(max_length=24, null=True, blank=True)
     filename    = models.CharField(max_length=24, null=True, blank=True)
+    url         = models.CharField(max_length=256, null=True, blank=True)
 
     def get_username(self):
         UserModel = getattr(settings, 'ASYNCUP_USER_MODEL', None)
@@ -17,9 +19,3 @@ class AsyncJob(models.Model):
             return user
         else:
             return self.user_id
-
-    def get_url(self):
-        bucket_name = getattr(settings, 'ASYNCUP_S3_BUCKET_NAME', None)
-        return 'https://s3.amazonaws.com/'+bucket_name+'/'+self.filename
-
-
