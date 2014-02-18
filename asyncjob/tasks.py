@@ -25,6 +25,7 @@ class AsyncTask(celery.Task):
     """
 
     filename = None
+    job = None
     user = None
     rm_file_after_upload = False
 
@@ -64,6 +65,8 @@ class AsyncTask(celery.Task):
             return
 
         job = AsyncJob()
+        self.job = job
+
         job.user       = self.user
         job.status     = ASYNCJOB_PROCESSING
         job.start_date = datetime.datetime.now()

@@ -6,7 +6,7 @@ from asyncjob.models import AsyncJob
 
 class AsyncJobAdmin(ModelAdmin):
 
-    list_display = ('_user','start_date','end_date','_link','status', 'filename', '_filesize')
+    list_display = ('_user','start_date','end_date','_link','status', '_filesize')
     ordering = ('-start_date',)
     actions = []
 
@@ -26,7 +26,7 @@ class AsyncJobAdmin(ModelAdmin):
         if obj.status == ASYNCJOB_COMPLETE:
             link = obj.url
             name = obj.filename
-            output = '<a href="%s">Link: %s</a>' % (link, name)
+            output = '<a href="%s">%s</a>' % (link, name)
         else:
             output = ''
         return output
