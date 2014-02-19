@@ -14,8 +14,12 @@ class AsyncJobAdmin(ModelAdmin):
     quick_count = 'id'
 
     def _filesize(self, obj):
-        return obj.filesize
-    _filesize.short_description = "Bytesize"
+        try:
+            out = sizeof_fmt(int(obj.filesize))
+        except TypeError:
+            out = None
+        return out
+    _filesize.short_description = "Filesize"
 
     def _user(self, obj):
         return str(obj.user)
@@ -50,4 +54,9 @@ class AsyncJobAdmin(ModelAdmin):
         return False
 
 
-
+def sizeof_fmt(num):
+    for x in ['bytes','KB','MB','GB']:
+        if num < 1024.0:
+            return "%3.1f%s" % (num, x)
+        num /= 1024.0
+    return "%3.1f%s" % (num, 'TB')
