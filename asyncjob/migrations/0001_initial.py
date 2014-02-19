@@ -17,6 +17,7 @@ class Migration(SchemaMigration):
             ('end_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('filesize', self.gf('django.db.models.fields.CharField')(max_length=24, null=True, blank=True)),
             ('filename', self.gf('django.db.models.fields.CharField')(max_length=24, null=True, blank=True)),
+            ('url', self.gf('django.db.models.fields.CharField')(max_length=256, null=True, blank=True)),
         ))
         db.send_create_signal('asyncjob', ['AsyncJob'])
 
@@ -35,6 +36,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'start_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
             'status': ('django.db.models.fields.CharField', [], {'max_length': '24'}),
+            'url': ('django.db.models.fields.CharField', [], {'max_length': '256', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'})
         },
         'auth.group': {
