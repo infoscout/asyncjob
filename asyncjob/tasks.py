@@ -104,7 +104,7 @@ class AsyncTask(celery.Task):
             job.end_date = datetime.datetime.now()
             job.save()
             logger.debug('AsyncJob #%s Complete!' % job_id)
-            return 'Success'
+            return ASYNCJOB_COMPLETE
 
         except Exception as e:
             logger.error('AsyncJob #%s Failed!' % job_id, exc_info=True)
