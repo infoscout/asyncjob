@@ -17,7 +17,7 @@ class AsyncJobAdmin(ModelAdmin):
         try:
             out = sizeof_fmt(int(obj.filesize))
         except TypeError:
-            out = None
+            out = ''
         return out
     _filesize.short_description = "Filesize"
 

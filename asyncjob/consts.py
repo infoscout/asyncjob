@@ -1,6 +1,7 @@
 from django.conf import settings
 
 # SyncJob States:
+ASYNCJOB_CELERY_WAIT = 'Celery Wait'
 ASYNCJOB_PROCESSING = 'Processing'
 ASYNCJOB_UPLOADING = 'Uploading File'
 ASYNCJOB_COMPLETE = 'Complete'

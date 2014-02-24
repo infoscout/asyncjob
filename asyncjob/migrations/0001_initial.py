@@ -13,7 +13,7 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
             ('status', self.gf('django.db.models.fields.CharField')(max_length=24)),
-            ('start_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
+            ('start_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, null=True, blank=True)),
             ('end_date', self.gf('django.db.models.fields.DateTimeField')(null=True, blank=True)),
             ('filesize', self.gf('django.db.models.fields.CharField')(max_length=24, null=True, blank=True)),
             ('filename', self.gf('django.db.models.fields.CharField')(max_length=64, null=True, blank=True)),
@@ -34,7 +34,7 @@ class Migration(SchemaMigration):
             'filename': ('django.db.models.fields.CharField', [], {'max_length': '64', 'null': 'True', 'blank': 'True'}),
             'filesize': ('django.db.models.fields.CharField', [], {'max_length': '24', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'start_date': ('django.db.models.fields.DateTimeField', [], {'null': 'True', 'blank': 'True'}),
+            'start_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'null': 'True', 'blank': 'True'}),
             'status': ('django.db.models.fields.CharField', [], {'max_length': '24'}),
             'url': ('django.db.models.fields.CharField', [], {'max_length': '768', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'})

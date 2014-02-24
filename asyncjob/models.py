@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 class AsyncJob(models.Model):
     user        = models.ForeignKey(User, null=True, blank=True)
     status      = models.CharField(max_length=24)
-    start_date  = models.DateTimeField(null=True, blank=True)
+    start_date  = models.DateTimeField(null=True, blank=True, auto_now_add=True)
     end_date    = models.DateTimeField(null=True, blank=True)
     filesize    = models.CharField(max_length=24, null=True, blank=True)
     filename    = models.CharField(max_length=64, null=True, blank=True)
