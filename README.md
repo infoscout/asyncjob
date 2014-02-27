@@ -1,6 +1,6 @@
 # AsyncJob
 
-Abstract celery task to run a process, upload output stream to S3, and provide admin monitoring interface.
+Abstract celery task to run a process, upload output stream to S3, with admin monitoring interface.
 
 ### Use It:
 	Extend AsyncJob class and define syncjob() method to output either a string or file typed object.
@@ -16,10 +16,10 @@ Abstract celery task to run a process, upload output stream to S3, and provide a
             AWS_ACCESS_KEY_ID
             AWS_SECRET_ACCESS_KEY
 
-        See the Monitoring:
+	See the Monitoring:
             /admin/asyncjob/asyncjob/
 
-        Logging will use 'asyncjob' django logger.
+	Logging will use 'asyncjob' django logger.
 
 
 ### Dependencies:
@@ -43,7 +43,6 @@ Abstract celery task to run a process, upload output stream to S3, and provide a
             """
             Assign your instantiation parameters here.
             Be sure to assign self.user to a User object & end with a call the super() class.
-
             Assigning self.filename will override default of AsyncJob.id + datestamp
             """
             from django.contrib.auth.models import User
@@ -70,7 +69,6 @@ Abstract celery task to run a process, upload output stream to S3, and provide a
             """
             Celery Handler called after the task returns.
             http://celery.readthedocs.org/en/latest/userguide/tasks.html#handlers
-
             Can evaluate task state, perform emailing, etc...
             """
             if retval == ASYNCJOB_COMPLETE:
