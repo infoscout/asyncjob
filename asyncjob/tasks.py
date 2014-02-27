@@ -68,16 +68,7 @@ class AsyncTask(celery.Task):
             filename = self.filename if self.filename else self.job.id
             s3_key = self.get_unique_s3_key(filename)
 
-            if isinstance(stream_resource, basestring):
-                s3_key.set_contents_from_string(stream_resource)
-            elif isinstance(stream_resource, file):
-                stream_resource.seek(0)
-                s3_key.set_contents_from_file(stream_resource)
-                if self.rm_file_after_upload:
-                    os.remove(stream_resource.name)
-            else:
-                logger.error('AsyncJob #%s unknown type:%s' % (self.job.id, type(stream_resource)), exc_info=True)
-                raise Exception
+            self.upload_stream_resource(s3_key, stream_resource)
 
             # Mark complete
             job.filesize = s3_key.size
@@ -87,12 +78,26 @@ class AsyncTask(celery.Task):
             job.end_date = datetime.datetime.now()
             job.save()
             logger.debug('AsyncJob #%s Complete!' % self.job.id)
-            return ASYNCJOB_COMPLETE
 
         except Exception as e:
-            logger.error('AsyncJob #%s Failed!' % self.job.id, exc_info=True)
             job.status = ASYNCJOB_ERROR
             job.save()
+            logger.error('AsyncJob #%s Failed!' % self.job.id, exc_info=True)
+
+        self.job = job
+        return ASYNCJOB_COMPLETE
+
+    def upload_stream_resource(self, s3_key, stream_resource):
+        if isinstance(stream_resource, basestring):
+            s3_key.set_contents_from_string(stream_resource)
+        elif isinstance(stream_resource, file):
+            stream_resource.seek(0)
+            s3_key.set_contents_from_file(stream_resource)
+            if self.rm_file_after_upload:
+                os.remove(stream_resource.name)
+        else:
+            logger.error('AsyncJob #%s unknown type:%s' % (self.job.id, type(stream_resource)), exc_info=True)
+            raise Exception('Unknown Stream Resource Type.')
 
     def get_unique_s3_key(self, filename):
         # Boto connection
@@ -116,5 +121,36 @@ class AsyncTask(celery.Task):
             filename = prefix +'_'+ hash + file_extension
         s3_key.key = filename
         return s3_key
+
+
+
+class TestAsyncJobTask(AsyncTask):
+
+    test_value = None
+    CELERY_ALWAYS_EAGER = True
+
+    def __call__(self, test_value, *args, **kwargs):
+        print 'test calling'
+        from django.contrib.auth.models import User
+        user = User.objects.create()
+        self.test_value = test_value
+        self.user = user
+        return self.run(*args, **kwargs)
+
+    def after_return(self, status, retval, task_id, args, kwargs, einfo):
+        """
+        Handler called after the task returns.
+        """
+        print 'test after-return'
+        assert self.job.status  == ASYNCJOB_COMPLETE
+
+    def asynctask(self):
+        # Do some work and return a file() handle or string
+        resultant = 1 + 1
+        return resultant
+
+    def upload_stream_resource(self):
+        # disabling s3 for testing
+        pass
 
 
