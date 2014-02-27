@@ -130,7 +130,6 @@ class TestAsyncJobTask(AsyncTask):
     CELERY_ALWAYS_EAGER = True
 
     def __call__(self, test_value, *args, **kwargs):
-        print 'test calling'
         from django.contrib.auth.models import User
         user = User.objects.create()
         self.test_value = test_value
@@ -138,19 +137,16 @@ class TestAsyncJobTask(AsyncTask):
         return self.run(*args, **kwargs)
 
     def after_return(self, status, retval, task_id, args, kwargs, einfo):
-        """
-        Handler called after the task returns.
-        """
-        print 'test after-return'
         assert self.job.status  == ASYNCJOB_COMPLETE
 
     def asynctask(self):
         # Do some work and return a file() handle or string
         resultant = 1 + 1
-        return resultant
+        output = str(resultant)
+        return output
 
     def upload_stream_resource(self):
-        # disabling s3 for testing
+        # disabling s3 upload for testing
         pass
 
 

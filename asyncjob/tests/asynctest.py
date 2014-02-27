@@ -13,6 +13,3 @@ class AsyncjobTestCase(unittest.TestCase):
     def test_asyncjob(self):
         task = TestAsyncJobTask()
         task.delay()
-        print AsyncJob.objects.all(), 1
-        from django.contrib.auth.models import User
-        print User.objects.all(), 2

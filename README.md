@@ -36,30 +36,27 @@ Abstract celery task to run a process, upload output stream to S3, with admin mo
     class ExampleTask(AsyncTask):
 
         input_string = None
-        hashed_string = None
-        rm_file_after_upload = True
+        rm_file_after_upload = False # True for resultant file-removal
 
         def __call__(self, user_obj, input_string, *args, **kwargs):
             """
             Assign your instantiation parameters here.
-            Be sure to assign self.user to a User object & end with a call the super() class.
+            Be sure to assign self.user to a User object & return with a call to run()
             Assigning self.filename will override default of AsyncJob.id + datestamp
             """
-            from django.contrib.auth.models import User
-            assert isinstance(user, User)
-            self.user = user
+            self.user = user_obj
     
             self.input_string = input_string
 
             filename = input_string[:12]
-            self.filename = '%s.csv' % (filename) # 
+            self.filename = '%s.csv' % (filename)
 
-            super(ExampleTask, self).__call__(*args, **kwargs)
+            return self.run(*args, **kwargs)
 
         def asynctask(self):
             """
             This is where the heavy lifting of your task takes place.
-            Return a string or file typed object to push to S3
+            Return a string or file typed object to push to S3.
             """
             input_string = self.input_string
             resultant = complex_function(input_string)
