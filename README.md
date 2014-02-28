@@ -6,7 +6,7 @@ Abstract celery task to run a process, upload output stream to S3, with admin mo
 
 Extend AsyncJob class and define syncjob() method to output either a string or file typed object.
 
-The AsyncJob will upload the output to S3 and provide admin monitoring as the process runs.
+The AsyncJob will upload this output to S3 and provide admin monitoring as the process runs.
 
 AsyncJob Django Settings:
 
@@ -41,20 +41,19 @@ Logging will use 'asyncjob' django logger.
         input_string = None
         rm_file_after_upload = False # True for resultant file-removal
 
-        def __call__(self, user_obj, input_string, *args, **kwargs):
+        def __call__(self, *args, **kwargs):
             """
             Assign your instantiation parameters here.
-            Be sure to assign self.user to a User object & return with a call to run()
-            Assigning self.filename will override default of AsyncJob.id + datestamp
+            override the default self.filename of AsyncJob.id + datestamp
+            Be sure to end with a call to super()
             """
-            self.user = user_obj
     
-            self.input_string = input_string
+            self.input_string = kwargs['input_string']
 
             filename = input_string[:12]
             self.filename = '%s.csv' % (filename)
 
-            return self.run(*args, **kwargs)
+            super(ExampleTask, self).__call__(*args, **kwargs)
 
         def asynctask(self):
             """
@@ -76,4 +75,5 @@ Logging will use 'asyncjob' django logger.
             elif self.job.user and self.job.user.email:
                 export_fail_email(self.job.user.email)
 
-
+    
+    ExampleTask().start(user=user, job_type='Demo', input_string='123abc')

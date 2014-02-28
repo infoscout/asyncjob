@@ -20,8 +20,9 @@ class AsyncTask(celery.Task):
 
     @param filename: name used to put to S3. Timestamp appended on collision
     @param user_id: django user (optional)
+    @param rm_file_after_upload
 
-    @method AsyncTask: override to return a string or file object that will be written to S3. 
+    @method AsyncTask: override to return a string or file object that will be uploaded to S3. 
     """
 
     abstract = True
@@ -39,7 +40,7 @@ class AsyncTask(celery.Task):
 
     def start(self, *args, **kwargs):
         """
-        Synchronously create AsyncJob object and delay async task.
+        Synchronously create AsyncJob object and async_task.delay().
         """
         job = AsyncJob()
         job.user = kwargs.get('user', None)
