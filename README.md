@@ -9,11 +9,13 @@ Extend AsyncJob class and define syncjob() method to output either a string or f
 The AsyncJob will upload the output to S3 and provide admin monitoring as the process runs.
 
 AsyncJob Django Settings:
+
     ASYNCJOB_S3_HTTP_BASE = 'https://s3.amazonaws.com/'
     ASYNCUP_S3_BUCKET_NAME = 'path.to.your.s3.bucket'
     ASYNCJOB_S3_BUCKET_FOLDER = 'sub.folder.name' 
 
 Boto Dependency Django Settings:
+
     AWS_ACCESS_KEY_ID
     AWS_SECRET_ACCESS_KEY
 
@@ -23,6 +25,7 @@ Logging will use 'asyncjob' django logger.
 
 
 ### Python dependencies
+
 * Django
 * Boto
 * Celery
