@@ -43,7 +43,7 @@ Logging will use 'asyncjob' django logger.
 
         def __call__(self, *args, **kwargs):
             """
-            Assign your instantiation parameters here.
+            Assign your instance params here.
             override the default self.filename of AsyncJob.id + datestamp
             Be sure to end with a call to super()
             """
@@ -75,5 +75,5 @@ Logging will use 'asyncjob' django logger.
             elif self.job.user and self.job.user.email:
                 export_fail_email(self.job.user.email)
 
-    
+    # Run it
     ExampleTask().start(user=user, job_type='Demo', input_string='123abc')
