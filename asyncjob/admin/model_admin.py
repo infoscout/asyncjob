@@ -6,7 +6,7 @@ from asyncjob.models import AsyncJob
 
 class AsyncJobAdmin(ModelAdmin):
 
-    list_display = ('_user','start_date','end_date','_link','status', '_filesize')
+    list_display = ('_user','_job_type','_link','start_date','end_date','status', '_filesize')
     ordering = ('-start_date',)
     actions = []
 
@@ -25,6 +25,10 @@ class AsyncJobAdmin(ModelAdmin):
         return str(obj.user)
     _user.allow_tags = False
     _user.short_description = 'Username'
+
+    def _job_type(self, obj):
+        return obj.job_type if obj.job_type else ''
+    _job_type.short_description = 'Type'
 
     def _link(self, obj):
         if obj.status == ASYNCJOB_COMPLETE:
@@ -46,6 +50,9 @@ class AsyncJobAdmin(ModelAdmin):
             qs = self.qs_str_filter(qs, 'user__username', self.other_search_fields['user'])
         if 'status' in self.other_search_fields:
             qs = self.qs_str_filter(qs, 'status', self.other_search_fields['status'])
+        if 'job_type' in self.other_search_fields:
+            qs = self.qs_str_filter(qs, 'job_type', self.other_search_fields['job_type'])
+            
 
         qs.order_by('-start_date')
         return qs

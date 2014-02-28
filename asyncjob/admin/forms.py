@@ -6,4 +6,5 @@ class AsyncJobListForm(ChangeListSearchForm):
         super(AsyncJobListForm, self).__init__(*args, **kwargs)
 
     user = forms.CharField(label='Username')
+    job_type = forms.CharField(label='Type')
     status = forms.CharField()

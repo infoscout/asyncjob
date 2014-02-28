@@ -37,17 +37,22 @@ class AsyncTask(celery.Task):
         """
         pass
 
-    def __call__(self, *args, **kwargs):
-
+    def start(self, *args, **kwargs):
+        """
+        Synchronously create AsyncJob object and delay async task.
+        """
         job = AsyncJob()
-        job.status = ASYNCJOB_CELERY_WAIT
-        job.user = self.user
+        job.user = kwargs.get('user', None)
+        job.job_type = kwargs.get('job_type', None)
         job.save()
-        self.job = job
+        self.delay(job=job, *args, **kwargs)
 
+    def __call__(self, *args, **kwargs):
+        self.job = kwargs['job']
+        self.user = kwargs['user']
         return self.run(*args, **kwargs)
 
-    def run(self):
+    def run(self, *args, **kwargs):
         try:
             if s3_bucket_name is None or s3_bucket_folder is None:
                 logger.debug('AsyncJob #%s Missing S3 settings.' % self.job.id)
@@ -116,7 +121,7 @@ class AsyncTask(celery.Task):
             except S3ResponseError:
                 if attempts>10:
                     raise
-            hash = str(datetime.datetime.now())[:-1]
+            hash = str(datetime.datetime.now())[16:]
             prefix, file_extension = os.path.splitext(filename)
             filename = prefix +'_'+ hash + file_extension
         s3_key.key = filename
