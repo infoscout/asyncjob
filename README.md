@@ -2,33 +2,33 @@
 
 Abstract celery task to run a process, upload output stream to S3, with admin monitoring interface.
 
-### Use It:
-	Extend AsyncJob class and define syncjob() method to output either a string or file typed object.
+### Implementation
 
-	The AsyncJob will upload the output to S3 and provide admin monitoring as the process runs.
+Extend AsyncJob class and define syncjob() method to output either a string or file typed object.
 
-	AsyncJob Django Settings:
-            ASYNCJOB_S3_HTTP_BASE = 'https://s3.amazonaws.com/'
-            ASYNCUP_S3_BUCKET_NAME = 'path.to.your.s3.bucket'
-            ASYNCJOB_S3_BUCKET_FOLDER = 'sub.folder.name' 
+The AsyncJob will upload the output to S3 and provide admin monitoring as the process runs.
 
-	Boto Dependency Django Settings:
-            AWS_ACCESS_KEY_ID
-            AWS_SECRET_ACCESS_KEY
+AsyncJob Django Settings:
+    ASYNCJOB_S3_HTTP_BASE = 'https://s3.amazonaws.com/'
+    ASYNCUP_S3_BUCKET_NAME = 'path.to.your.s3.bucket'
+    ASYNCJOB_S3_BUCKET_FOLDER = 'sub.folder.name' 
 
-	See the Monitoring:
-            /admin/asyncjob/asyncjob/
+Boto Dependency Django Settings:
+    AWS_ACCESS_KEY_ID
+    AWS_SECRET_ACCESS_KEY
 
-	Logging will use 'asyncjob' django logger.
+See the Monitoring: /admin/asyncjob/asyncjob/
+
+Logging will use 'asyncjob' django logger.
 
 
-### Dependencies:
-    Django
-    Boto
-    Celery
-    django-celery
-    kombu
-    South (for included schema migration)
+### Python dependencies
+* Django
+* Boto
+* Celery
+* django-celery
+* kombu
+* South (for included schema migration)
 
 
 ### Example:
