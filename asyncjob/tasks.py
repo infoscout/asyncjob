@@ -30,6 +30,7 @@ class AsyncTask(celery.Task):
     job = None
     user = None
     rm_file_after_upload = False
+    job_type = ''
 
     @abstractmethod
     def asynctask(self):
@@ -44,7 +45,7 @@ class AsyncTask(celery.Task):
         """
         job = AsyncJob()
         job.user = kwargs.get('user', None)
-        job.job_type = kwargs.get('job_type', None)
+        job.job_type = self.job_type
         job.save()
         self.delay(job=job, *args, **kwargs)
 
