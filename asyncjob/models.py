@@ -23,5 +23,5 @@ class AsyncJob(models.Model):
             return self.user_id
 
     def __str__(self):
-        value = self.filename or self.id
-        return '%s - %s' % (self.user, value)
+        filename = self.filename if self.filename else ''
+        return '%s - job #%s - %s' % (self.user, self.id, filename)
