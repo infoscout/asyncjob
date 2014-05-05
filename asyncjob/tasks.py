@@ -84,7 +84,7 @@ class AsyncTask(celery.Task):
             job.filename = s3_key.key
             job.end_date = datetime.datetime.now()
             job.save()
-            logger.debug('AsyncJob #%s Complete!' % self.job.id)
+            logger.info('AsyncJob #%s Complete!' % self.job.id)
 
         except Exception as e:
             job.status = ASYNCJOB_ERROR
