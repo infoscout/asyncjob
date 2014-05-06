@@ -90,6 +90,7 @@ class AsyncTask(celery.Task):
             job.status = ASYNCJOB_ERROR
             job.save()
             logger.error('AsyncJob #%s Failed!' % self.job.id, exc_info=True)
+            raise Exception(e) # Re-raise exception to celery handling
 
         self.job = job
         return ASYNCJOB_COMPLETE
