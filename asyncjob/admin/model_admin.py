@@ -1,4 +1,4 @@
-from isc_admin import ModelAdmin
+from isc_admin.model_admin import ModelAdmin
 from asyncjob.admin.forms import AsyncJobListForm
 from asyncjob.consts import s3_bucket_name, s3_bucket_folder, \
     ASYNCJOB_COMPLETE

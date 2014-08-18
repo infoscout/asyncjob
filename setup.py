@@ -15,4 +15,5 @@ setup(name='asyncjob',
         'kombu==2.5.11',                      # Also required as part of django-celery
         'django-celery==3.0.11',              # Allows django to run as a message broker
     ]
+    # requires: isc-admin
 )
