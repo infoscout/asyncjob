@@ -8,7 +8,7 @@ setup(name='asyncjob',
     url = 'http://github.com/infoscout/asynjob',
     version = current_version(),    
     install_requires=[
-        'django==1.4',
+        'django>=1.4',
         'boto==2.8.0',                       # AWS utils
         'south==0.7.6',                      # SQL schema migration 
         'celery==3.0.17',                     # Python queue framework
