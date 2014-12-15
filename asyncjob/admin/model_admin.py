@@ -46,12 +46,12 @@ class AsyncJobAdmin(ModelAdmin):
         qs = AsyncJob.objects.all()
         #qs = super(AsyncJobAdmin, self).queryset(request)
 
-        if 'user' in self.other_search_fields:
-            qs = self.qs_str_filter(qs, 'user__username', self.other_search_fields['user'])
-        if 'status' in self.other_search_fields:
-            qs = self.qs_str_filter(qs, 'status', self.other_search_fields['status'])
-        if 'job_type' in self.other_search_fields:
-            qs = self.qs_str_filter(qs, 'job_type', self.other_search_fields['job_type'])
+        if 'user' in self.get_other_search_fields(request):
+            qs = self.qs_str_filter(qs, 'user__username', self.get_other_search_fields(request)['user'])
+        if 'status' in self.get_other_search_fields(request):
+            qs = self.qs_str_filter(qs, 'status', self.get_other_search_fields(request)['status'])
+        if 'job_type' in self.get_other_search_fields(request):
+            qs = self.qs_str_filter(qs, 'job_type', self.get_other_search_fields(request)['job_type'])
             
 
         qs.order_by('-start_date')
